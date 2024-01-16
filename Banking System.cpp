@@ -175,12 +175,15 @@ vector<User> GetUsersFromFile()
     return vAllUsersRecords;
 }
 
-void PrintClientRecord(User UserData)
+void PrintClientRecord(User UserData, bool ShowBalancesOnly)
 {
     cout << "| " << setw(15) << left << UserData.AccountNumber;
-    cout << "| " << setw(10) << left << UserData.PinCode;
     cout << "| " << setw(40) << left << UserData.Name;
-    cout << "| " << setw(12) << left << UserData.Phone;
+    if (!ShowBalancesOnly)
+    {
+        cout << "| " << setw(10) << left << UserData.PinCode;
+        cout << "| " << setw(12) << left << UserData.Phone;
+    }
     cout << "| " << setw(12) << left << UserData.AccountBalance;
 }
 
@@ -196,30 +199,42 @@ void PrintClientRecordInDetails(User UserData)
     cout << "\n-----------------------------------\n";
 }
 
-void PrintAllCustomer()
+void PrintAllCustomer(bool ShowBalancesOnly = false)
 {
     vector<User> vAllUsers = GetUsersFromFile();
+    float TotalBalances = 0;
 
     cout << "\n\t\t\t\t\tClient List (" << vAllUsers.size() << ") Client(s).";
     cout << "\n_______________________________________________________";
     cout << "_________________________________________\n"
          << endl;
     cout << "| " << left << setw(15) << "Accout Number";
-    cout << "| " << left << setw(10) << "Pin Code";
     cout << "| " << left << setw(40) << "Client Name";
-    cout << "| " << left << setw(12) << "Phone";
+    if (!ShowBalancesOnly)
+    {
+        cout << "| " << left << setw(10) << "Pin Code";
+        cout << "| " << left << setw(12) << "Phone";
+    }
     cout << "| " << left << setw(12) << "Balance";
     cout << "\n_______________________________________________________";
     cout << "_________________________________________\n"
          << endl;
     for (User &User : vAllUsers)
     {
-        PrintClientRecord(User);
+        PrintClientRecord(User, ShowBalancesOnly);
+        TotalBalances += User.AccountBalance;
         cout << endl;
     }
     cout << "\n_______________________________________________________";
     cout << "_________________________________________\n"
          << endl;
+
+
+    if (ShowBalancesOnly)
+    {
+        cout << "\n_________________________________Total Balances: "<< TotalBalances  <<"_________________________________________\n\n";
+    }
+    
 }
 
 bool FindCustomer(string AccountNumber, User &CurrentUser)
@@ -372,28 +387,41 @@ void DepositOrWithdraw(string AccountNumber, string TransactionType)
     string Msg = "Please Enter " + TransactionType + " Amount: ";
     float Amount = ReadFloat(Msg);
 
+    vector<User> vAllUsers = GetUsersFromFile();
+    User UpdatedUser;
+
+    for (User &u : vAllUsers)
+    {
+        if (u.AccountNumber == AccountNumber)
+        {
+            UpdatedUser = u;
+            if (TransactionType == "Withdrawal")
+            {
+                while (Amount > UpdatedUser.AccountBalance)
+                {
+                    cout << "The withdrawal amount exceeds the balance, you can withdraw up to " << UpdatedUser.AccountBalance << endl;
+                    Amount = ReadFloat(Msg);
+                }
+                UpdatedUser.AccountBalance -= Amount;
+            }
+            else
+            {
+                UpdatedUser.AccountBalance += Amount;
+            }
+
+            u = UpdatedUser;
+            break;
+        }
+    }
+
     char Answer = ReadChar("Are you sure you want to complete this transaction? (y / n)");
 
     if (Answer == 'Y' || Answer == 'y')
     {
-        vector<User> vAllUsers = GetUsersFromFile();
-        User UpdatedUser;
-
-        for (User &u : vAllUsers)
-        {
-            if (u.AccountNumber == AccountNumber)
-            {
-                UpdatedUser = u;
-                TransactionType == "Deposit" ? UpdatedUser.AccountBalance += Amount : UpdatedUser.AccountBalance -= Amount;
-                u = UpdatedUser;
-                break;
-            }
-        }
-
-        cout << "\n\n New Balance is:" << UpdatedUser.AccountBalance << "\n\n";
-
         OverwriteCutomersToFile(vAllUsers);
     }
+
+    cout << "\n\n New Balance is:" << UpdatedUser.AccountBalance << "\n\n";
 }
 
 void ShowDepositOrWithdrawalMenu(string TransactionsType)
@@ -409,7 +437,6 @@ void ShowDepositOrWithdrawalMenu(string TransactionsType)
     {
         cout << "Client with [" << AccountNumber << "] Doesnt Exist." << endl;
         AccountNumber = ReadString("Please Enter Account Number: ");
-
     }
 
     PrintClientRecordInDetails(CurrentUser);
@@ -435,7 +462,7 @@ void TransactionsOptions()
         break;
     case '3':
         system("cls");
-        DeleteCustomer(ReadString("Please Enter Account Number: "));
+        PrintAllCustomer(true);
         ShowTransactionsMenu();
         break;
     case '4':
