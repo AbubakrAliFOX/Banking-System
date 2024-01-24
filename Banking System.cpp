@@ -76,6 +76,7 @@ vector<string> split(string Str, string Delim)
 }
 
 bool FindCustomer(string AccountNumber, Client &CurrentClient);
+bool FindUser(string UserName, string Password, User &CurrentUser, bool UsePassWord);
 
 Client CreateClient()
 {
@@ -105,6 +106,31 @@ Client CreateClient()
     return ClientData;
 }
 
+User CreateUser()
+{
+    User UserData;
+
+    cout << "Enter User Name? ";
+    getline(cin >> ws, UserData.UserName);
+
+    while (FindUser(UserData.UserName, UserData.Password, UserData, false))
+    {
+        cout << "[" << UserData.UserName << "] is already used. Please enter a different user name: ";
+        getline(cin >> ws, UserData.UserName);
+    };
+
+    cout << "\nEnter Password? ";
+    getline(cin >> ws, UserData.Password);
+
+    cout << "Enter Permissions? ";
+    cin >> UserData.Permissions;
+
+    cout << "\n\n User Created Successfully! \n\n"
+         << endl;
+
+    return UserData;
+}
+
 string ConvertRecordToLine(Client ClientData, string Seperator)
 {
     string ClientRecord = "";
@@ -114,6 +140,15 @@ string ConvertRecordToLine(Client ClientData, string Seperator)
     ClientRecord += ClientData.Phone + Seperator;
     ClientRecord += to_string(ClientData.AccountBalance);
     return ClientRecord;
+}
+
+string ConvertRecordToLine(User UserData, string Seperator, bool IsUser)
+{
+    string UserRecord = "";
+    UserRecord += UserData.UserName + Seperator;
+    UserRecord += UserData.Password + Seperator;
+    UserRecord += to_string(UserData.Permissions);
+    return UserRecord;
 }
 
 Client ConvertLineToRecord(string DataLine, string Seperator)
@@ -130,7 +165,7 @@ Client ConvertLineToRecord(string DataLine, string Seperator)
     return ClientData;
 }
 
-User ConvertUserLineToRecord(string DataLine, string Seperator)
+User ConvertLineToRecord(string DataLine, string Seperator, bool IsUser)
 {
     User UserData;
     vector<string> vData = split(DataLine, Seperator);
@@ -142,11 +177,11 @@ User ConvertUserLineToRecord(string DataLine, string Seperator)
     return UserData;
 }
 
-void AddCustomersToFile(string LineData)
+void AddCustomersToFile(string LineData, string File = "Bank.txt")
 {
     fstream MyFile;
 
-    MyFile.open(FileName, ios::out | ios::app);
+    MyFile.open(File, ios::out | ios::app);
 
     if (MyFile.is_open())
     {
@@ -167,6 +202,24 @@ void CreateCustomers()
 
         string CustomerLineData = ConvertRecordToLine(CreateClient(), "##");
         AddCustomersToFile(CustomerLineData);
+
+        Answer = ReadChar("Do you want to add more clients? (y / n)");
+
+    } while (Answer == 'y' || Answer == 'Y');
+}
+
+void CreateUsers()
+{
+    char Answer;
+    short Counter = 0;
+    do
+    {
+        User CurrentUser;
+        ++Counter;
+        cout << "\n\nAdding User " << Counter << " : \n\n";
+
+        string CustomerLineData = ConvertRecordToLine(CreateUser(), "##", true);
+        AddCustomersToFile(CustomerLineData, "Users.txt");
 
         Answer = ReadChar("Do you want to add more clients? (y / n)");
 
@@ -207,7 +260,7 @@ vector<User> GetUsersFromFile()
         string Line;
         while (getline(MyFile, Line))
         {
-            User CurrentUser = ConvertUserLineToRecord(Line, "##");
+            User CurrentUser = ConvertLineToRecord(Line, "##", true);
             vAllUsersRecords.push_back(CurrentUser);
         }
 
@@ -307,7 +360,6 @@ void PrintAllUsers()
     cout << "\n_______________________________________________________";
     cout << "_________________________________________\n"
          << endl;
-
 }
 
 bool FindCustomer(string AccountNumber, Client &CurrentClient)
@@ -326,16 +378,30 @@ bool FindCustomer(string AccountNumber, Client &CurrentClient)
     return false;
 }
 
-bool FindUser(string UserName, string Password, User &CurrentUser)
+bool FindUser(string UserName, string Password, User &CurrentUser, bool UsePassWord = true)
 {
     vector<User> vAllUsers = GetUsersFromFile();
 
-    for (User &u : vAllUsers)
+    if (UsePassWord)
     {
-        if (UserName == u.UserName && Password == u.Password)
+        for (User &u : vAllUsers)
         {
-            CurrentUser = u;
-            return true;
+            if (UserName == u.UserName && Password == u.Password)
+            {
+                CurrentUser = u;
+                return true;
+            }
+        }
+    }
+    else
+    {
+        for (User &u : vAllUsers)
+        {
+            if (UserName == u.UserName)
+            {
+                CurrentUser = u;
+                return true;
+            }
         }
     }
 
@@ -581,7 +647,7 @@ void UsersOptions()
         break;
     case '2':
         system("cls");
-        ShowDepositOrWithdrawalMenu("Withdrawal");
+        CreateUsers();
         ShowManageUsersMenu();
         break;
     case '3':
@@ -598,7 +664,6 @@ void UsersOptions()
     }
 }
 
-
 void ShowTransactionsMenu()
 {
     cout << "===========================================================================\n";
@@ -614,7 +679,8 @@ void ShowTransactionsMenu()
     TransactionsOptions();
 }
 
-void ShowManageUsersMenu() {
+void ShowManageUsersMenu()
+{
     cout << "===========================================================================\n";
     cout << "                                 Users Manager                                \n";
     cout << "===========================================================================\n\n";
