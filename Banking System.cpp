@@ -130,7 +130,6 @@ Client ConvertLineToRecord(string DataLine, string Seperator)
     return ClientData;
 }
 
-
 User ConvertUserLineToRecord(string DataLine, string Seperator)
 {
     User UserData;
@@ -230,6 +229,13 @@ void PrintClientRecord(Client ClientData, bool ShowBalancesOnly)
     cout << "| " << setw(12) << left << ClientData.AccountBalance;
 }
 
+void PrintUserRecord(User UserData)
+{
+    cout << "| " << setw(30) << left << UserData.UserName;
+    cout << "| " << setw(30) << left << UserData.Password;
+    cout << "| " << setw(30) << left << UserData.Permissions;
+}
+
 void PrintClientRecordInDetails(Client ClientData)
 {
     cout << "\nThe following are the client details:\n";
@@ -276,6 +282,32 @@ void PrintAllCustomer(bool ShowBalancesOnly = false)
     {
         cout << "\n_________________________________Total Balances: " << TotalBalances << "_________________________________________\n\n";
     }
+}
+
+void PrintAllUsers()
+{
+    vector<User> vAllUsers = GetUsersFromFile();
+    float TotalBalances = 0;
+
+    cout << "\n\t\t\t\t\tClient List (" << vAllUsers.size() << ") User(s).";
+    cout << "\n_______________________________________________________";
+    cout << "_________________________________________\n"
+         << endl;
+    cout << "| " << left << setw(30) << "User Name";
+    cout << "| " << left << setw(30) << "Password";
+    cout << "| " << left << setw(30) << "Permissions";
+    cout << "\n_______________________________________________________";
+    cout << "_________________________________________\n"
+         << endl;
+    for (User &User : vAllUsers)
+    {
+        PrintUserRecord(User);
+        cout << endl;
+    }
+    cout << "\n_______________________________________________________";
+    cout << "_________________________________________\n"
+         << endl;
+
 }
 
 bool FindCustomer(string AccountNumber, Client &CurrentClient)
@@ -439,6 +471,10 @@ void ShowMainMenue();
 
 void ShowTransactionsMenu();
 
+void LogInScreen();
+
+void ShowManageUsersMenu();
+
 void DepositOrWithdraw(string AccountNumber, string TransactionType)
 {
     string Msg = "Please Enter " + TransactionType + " Amount: ";
@@ -531,6 +567,38 @@ void TransactionsOptions()
     }
 }
 
+void UsersOptions()
+{
+    char Answer;
+    cin >> Answer;
+
+    switch (Answer)
+    {
+    case '1':
+        system("cls");
+        PrintAllUsers();
+        ShowManageUsersMenu();
+        break;
+    case '2':
+        system("cls");
+        ShowDepositOrWithdrawalMenu("Withdrawal");
+        ShowManageUsersMenu();
+        break;
+    case '3':
+        system("cls");
+        PrintAllCustomer(true);
+        ShowManageUsersMenu();
+        break;
+    case '4':
+        system("cls");
+        ShowMainMenue();
+        break;
+    default:
+        break;
+    }
+}
+
+
 void ShowTransactionsMenu()
 {
     cout << "===========================================================================\n";
@@ -544,6 +612,22 @@ void ShowTransactionsMenu()
     cout << "\n What would you like to do? (1-4) \n";
 
     TransactionsOptions();
+}
+
+void ShowManageUsersMenu() {
+    cout << "===========================================================================\n";
+    cout << "                                 Users Manager                                \n";
+    cout << "===========================================================================\n\n";
+    cout << "        [1] List Users.                  \n";
+    cout << "        [2] Add New User.                 \n";
+    cout << "        [3] Delete User.           \n";
+    cout << "        [4] Update User.                \n";
+    cout << "        [5] Find User.                \n";
+    cout << "        [6] Main Menu.                \n";
+
+    cout << "\n What would you like to do? (1-4) \n";
+
+    UsersOptions();
 }
 
 void GoBackToMainMenue()
@@ -592,8 +676,16 @@ void AppOptions()
         break;
     case '7':
         system("cls");
+        ShowManageUsersMenu();
+        ShowMainMenue();
+        break;
+    case '8':
+        system("cls");
+        LogInScreen();
         break;
     default:
+        cout << "Invalid Input!!!" << endl;
+        ShowMainMenue();
         break;
     }
 }
@@ -609,9 +701,10 @@ void ShowMainMenue()
     cout << "        [4] Update Client Info.             \n";
     cout << "        [5] Find Client.                    \n";
     cout << "        [6] Transactions.                   \n";
-    cout << "        [7] Exit                            \n";
+    cout << "        [7] Manage Users.                   \n";
+    cout << "        [8] Logout                            \n";
 
-    cout << "\n What would you like to do? (1-7) \n";
+    cout << "\n What would you like to do? (1-8) \n";
 
     AppOptions();
 }
