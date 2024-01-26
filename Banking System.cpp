@@ -76,7 +76,8 @@ vector<string> split(string Str, string Delim)
 }
 
 bool FindCustomer(string AccountNumber, Client &CurrentClient);
-bool FindUser(string UserName, string Password, User &CurrentUser, bool UsePassWord);
+bool FindUser(string UserName, string Password, User &CurrentUser);
+bool FindUser(string UserName, User &CurrentUser);
 
 Client CreateClient()
 {
@@ -113,7 +114,7 @@ User CreateUser()
     cout << "Enter User Name? ";
     getline(cin >> ws, UserData.UserName);
 
-    while (FindUser(UserData.UserName, UserData.Password, UserData, false))
+    while (FindUser(UserData.UserName, UserData))
     {
         cout << "[" << UserData.UserName << "] is already used. Please enter a different user name: ";
         getline(cin >> ws, UserData.UserName);
@@ -301,6 +302,16 @@ void PrintClientRecordInDetails(Client ClientData)
     cout << "\n-----------------------------------\n";
 }
 
+void PrintUserRecordInDetails(User UserData)
+{
+    cout << "\nThe following are the user details:\n";
+    cout << "-----------------------------------";
+    cout << "\nUser Name    : " << UserData.UserName;
+    cout << "\nPassword     : " << UserData.Password;
+    cout << "\nPermissions  : " << UserData.Permissions;
+    cout << "\n-----------------------------------\n";
+}
+
 void PrintAllCustomer(bool ShowBalancesOnly = false)
 {
     vector<Client> vAllClients = GetClientsFromFile();
@@ -378,33 +389,34 @@ bool FindCustomer(string AccountNumber, Client &CurrentClient)
     return false;
 }
 
-bool FindUser(string UserName, string Password, User &CurrentUser, bool UsePassWord = true)
+bool FindUser(string UserName, string Password, User &CurrentUser)
 {
     vector<User> vAllUsers = GetUsersFromFile();
 
-    if (UsePassWord)
+    for (User &u : vAllUsers)
     {
-        for (User &u : vAllUsers)
+        if (UserName == u.UserName && Password == u.Password)
         {
-            if (UserName == u.UserName && Password == u.Password)
-            {
-                CurrentUser = u;
-                return true;
-            }
-        }
-    }
-    else
-    {
-        for (User &u : vAllUsers)
-        {
-            if (UserName == u.UserName)
-            {
-                CurrentUser = u;
-                return true;
-            }
+            CurrentUser = u;
+            return true;
         }
     }
 
+    return false;
+}
+
+bool FindUser(string UserName, User &CurrentUser)
+{
+    vector<User> vAllUsers = GetUsersFromFile();
+
+    for (User &u : vAllUsers)
+    {
+        if (UserName == u.UserName)
+        {
+            CurrentUser = u;
+            return true;
+        }
+    }
     return false;
 }
 
@@ -419,6 +431,20 @@ void PrintCustomerSearchResult(string AccountNumber)
     else
     {
         cout << "\n Client Not Found" << endl;
+    }
+}
+
+void PrintUserSearchResult(string UserName)
+{
+    User CurrentUser;
+
+    if (FindUser(UserName, CurrentUser))
+    {
+        PrintUserRecordInDetails(CurrentUser);
+    }
+    else
+    {
+        cout << "\n User Not Found" << endl;
     }
 }
 
@@ -439,6 +465,23 @@ void OverwriteCutomersToFile(vector<Client> vClients)
     }
 }
 
+void OverwriteUsersToFile(vector<User> vUsers)
+{
+    fstream MyFile;
+
+    MyFile.open(UsersFile, ios::out);
+
+    if (MyFile.is_open())
+    {
+        for (User &u : vUsers)
+        {
+            MyFile << ConvertRecordToLine(u, "##", true) << "\n";
+        }
+
+        MyFile.close();
+    }
+}
+
 void RemoveCustomerFromFile(string AccountNumber)
 {
     vector<Client> vAllClients = GetClientsFromFile();
@@ -453,6 +496,22 @@ void RemoveCustomerFromFile(string AccountNumber)
     }
 
     OverwriteCutomersToFile(vUpdatedClients);
+}
+
+void RemoveUserFromFile(string UserName)
+{
+    vector<User> vAllUsers = GetUsersFromFile();
+    vector<User> vUpdatedUsers;
+
+    for (User &u : vAllUsers)
+    {
+        if (u.UserName != UserName)
+        {
+            vUpdatedUsers.push_back(u);
+        }
+    }
+
+    OverwriteUsersToFile(vUpdatedUsers);
 }
 
 void DeleteCustomer(string AccountNumber)
@@ -477,6 +536,28 @@ void DeleteCustomer(string AccountNumber)
     }
 }
 
+void DeleteUser(string UserName)
+{
+    User CurrentUser;
+    char Answer;
+
+    if (FindUser(UserName, CurrentUser))
+    {
+        PrintUserRecordInDetails(CurrentUser);
+        cout << "\n\nWould you like to delete this user? (y / n)" << endl;
+        cin >> Answer;
+        if (Answer == 'y' || Answer == 'Y')
+        {
+            RemoveUserFromFile(UserName);
+            cout << "\n\n Deleted Successfully! \n\n";
+        }
+    }
+    else
+    {
+        cout << "\n User Not Found" << endl;
+    }
+}
+
 Client CreateUpdatedClient(string AccountNumber)
 {
     Client ClientData;
@@ -494,6 +575,21 @@ Client CreateUpdatedClient(string AccountNumber)
     return ClientData;
 }
 
+User CreateUpdatedUser(string UserName)
+{
+    User UserData;
+
+    UserData.UserName = UserName;
+
+    cout << "\nEnter Password? ";
+    getline(cin >> ws, UserData.Password);
+
+    cout << "Enter Permissions? ";
+    cin >> UserData.Permissions;
+
+    return UserData;
+}
+
 void UpdateCustomerInFile(string AccountNumber)
 {
     vector<Client> vAllClients = GetClientsFromFile();
@@ -509,6 +605,23 @@ void UpdateCustomerInFile(string AccountNumber)
     }
 
     OverwriteCutomersToFile(vAllClients);
+}
+
+void UpdateUserInFile(string UserName)
+{
+    vector<User> vAllUsers = GetUsersFromFile();
+    User UpdatedUser;
+
+    for (User &u : vAllUsers)
+    {
+        if (u.UserName == UserName)
+        {
+            u = CreateUpdatedUser(UserName);
+            break;
+        }
+    }
+
+    OverwriteUsersToFile(vAllUsers);
 }
 
 void UpdateCustomer(string AccountNumber)
@@ -530,6 +643,28 @@ void UpdateCustomer(string AccountNumber)
     else
     {
         cout << "\n Client Not Found" << endl;
+    }
+}
+
+void UpdateUser(string UserName)
+{
+    User CurrentUser;
+    char Answer;
+
+    if (FindUser(UserName, CurrentUser))
+    {
+        PrintUserRecordInDetails(CurrentUser);
+        cout << "\n\nWould you like to update this user? (y / n)" << endl;
+        cin >> Answer;
+        if (Answer == 'y' || Answer == 'Y')
+        {
+            UpdateUserInFile(UserName);
+            cout << "\n\n Updated Successfully! \n\n";
+        }
+    }
+    else
+    {
+        cout << "\n User Not Found" << endl;
     }
 }
 
@@ -652,10 +787,20 @@ void UsersOptions()
         break;
     case '3':
         system("cls");
-        PrintAllCustomer(true);
+        DeleteUser(ReadString("Please Enter User Name: "));
         ShowManageUsersMenu();
         break;
     case '4':
+        system("cls");
+        UpdateUser(ReadString("Please Enter User Name: "));
+        ShowManageUsersMenu();
+        break;
+    case '5':
+        system("cls");
+        PrintUserSearchResult(ReadString("Please Enter User Name: "));
+        ShowManageUsersMenu();
+        break;
+    case '6':
         system("cls");
         ShowMainMenue();
         break;
