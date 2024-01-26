@@ -10,6 +10,22 @@ using namespace std;
 const string FileName = "Bank.txt";
 const string UsersFile = "Users.txt";
 
+struct Client
+{
+    string Name;
+    string AccountNumber, PinCode, Phone;
+    float AccountBalance;
+};
+
+struct User
+{
+    string UserName;
+    string Password;
+    int Permissions;
+};
+
+User LogedInUser;
+
 char ReadChar(string Msg)
 {
     char charachter;
@@ -34,20 +50,6 @@ float ReadFloat(string Msg)
     cin >> Number;
     return Number;
 }
-
-struct Client
-{
-    string Name;
-    string AccountNumber, PinCode, Phone;
-    float AccountBalance;
-};
-
-struct User
-{
-    string UserName;
-    string Password;
-    int Permissions;
-};
 
 vector<string> split(string Str, string Delim)
 {
@@ -75,9 +77,89 @@ vector<string> split(string Str, string Delim)
     return vWords;
 }
 
+enum enMainMenuePermissions
+{
+    eAll = -1,
+    pListClients = 1,
+    pAddNewClient = 2,
+    pDeleteClient = 4,
+    pUpdateClients = 8,
+    pFindClient = 16,
+    pTranactions = 32,
+    pManageUsers = 64
+};
+
 bool FindCustomer(string AccountNumber, Client &CurrentClient);
 bool FindUser(string UserName, string Password, User &CurrentUser);
 bool FindUser(string UserName, User &CurrentUser);
+void ShowAccessDeniedMessage();
+bool CheckPermission(enMainMenuePermissions Permission);
+void GoBackToMainMenue();
+
+int ReadPermissions()
+{
+    int Permissions = 0;
+    char Answer = 'n';
+
+    cout << "\nDo you want to give full access? y/n? ";
+    cin >> Answer;
+    if (Answer == 'y' || Answer == 'Y')
+    {
+        return -1;
+    }
+
+    cout << "\nDo you want to give access to : \n ";
+    cout << "\nShow Client List? y/n? ";
+    cin >> Answer;
+    if (Answer == 'y' || Answer == 'Y')
+    {
+        Permissions += enMainMenuePermissions::pListClients;
+    }
+
+    cout << "\nAdd New Client? y/n? ";
+    cin >> Answer;
+    if (Answer == 'y' || Answer == 'Y')
+    {
+        Permissions += enMainMenuePermissions::pAddNewClient;
+    }
+
+    cout << "\nDelete Client? y/n? ";
+    cin >> Answer;
+    if (Answer == 'y' || Answer == 'Y')
+    {
+        Permissions += enMainMenuePermissions::pDeleteClient;
+    }
+
+    cout << "\nUpdate Client? y/n? ";
+    cin >> Answer;
+    if (Answer == 'y' || Answer == 'Y')
+    {
+        Permissions += enMainMenuePermissions::pUpdateClients;
+    }
+
+    cout << "\nFind Client? y/n? ";
+    cin >> Answer;
+    if (Answer == 'y' || Answer == 'Y')
+    {
+        Permissions += enMainMenuePermissions::pFindClient;
+    }
+
+    cout << "\nTransactions? y/n? ";
+    cin >> Answer;
+    if (Answer == 'y' || Answer == 'Y')
+    {
+        Permissions += enMainMenuePermissions::pTranactions;
+    }
+
+    cout << "\nManage Users? y/n? ";
+    cin >> Answer;
+    if (Answer == 'y' || Answer == 'Y')
+    {
+        Permissions += enMainMenuePermissions::pManageUsers;
+    }
+
+    return Permissions;
+}
 
 Client CreateClient()
 {
@@ -124,7 +206,7 @@ User CreateUser()
     getline(cin >> ws, UserData.Password);
 
     cout << "Enter Permissions? ";
-    cin >> UserData.Permissions;
+    UserData.Permissions = ReadPermissions();
 
     cout << "\n\n User Created Successfully! \n\n"
          << endl;
@@ -193,6 +275,13 @@ void AddCustomersToFile(string LineData, string File = "Bank.txt")
 
 void CreateCustomers()
 {
+    if (!CheckPermission(enMainMenuePermissions::pAddNewClient))
+    {
+        ShowAccessDeniedMessage();
+        GoBackToMainMenue();
+        return;
+    }
+
     char Answer;
     short Counter = 0;
     do
@@ -314,6 +403,17 @@ void PrintUserRecordInDetails(User UserData)
 
 void PrintAllCustomer(bool ShowBalancesOnly = false)
 {
+
+    if (!ShowBalancesOnly)
+    {
+        if (!CheckPermission(enMainMenuePermissions::pListClients))
+        {
+            ShowAccessDeniedMessage();
+            GoBackToMainMenue();
+            return;
+        }
+    }
+
     vector<Client> vAllClients = GetClientsFromFile();
     float TotalBalances = 0;
 
@@ -420,8 +520,18 @@ bool FindUser(string UserName, User &CurrentUser)
     return false;
 }
 
-void PrintCustomerSearchResult(string AccountNumber)
+void PrintCustomerSearchResult()
 {
+
+    if (!CheckPermission(enMainMenuePermissions::pFindClient))
+    {
+        ShowAccessDeniedMessage();
+        GoBackToMainMenue();
+        return;
+    }
+
+    string AccountNumber = ReadString("Please Enter Account Number: ");
+
     Client CurrentClient;
 
     if (FindCustomer(AccountNumber, CurrentClient))
@@ -514,8 +624,16 @@ void RemoveUserFromFile(string UserName)
     OverwriteUsersToFile(vUpdatedUsers);
 }
 
-void DeleteCustomer(string AccountNumber)
+void DeleteCustomer()
 {
+    if (!CheckPermission(enMainMenuePermissions::pDeleteClient))
+    {
+        ShowAccessDeniedMessage();
+        GoBackToMainMenue();
+        return;
+    }
+
+    string AccountNumber = ReadString("Please Enter Account Number: ");
     Client CurrentClient;
     char Answer;
 
@@ -624,8 +742,17 @@ void UpdateUserInFile(string UserName)
     OverwriteUsersToFile(vAllUsers);
 }
 
-void UpdateCustomer(string AccountNumber)
+void UpdateCustomer()
 {
+
+    if (!CheckPermission(enMainMenuePermissions::pUpdateClients))
+    {
+        ShowAccessDeniedMessage();
+        GoBackToMainMenue();
+        return;
+    }
+
+    string AccountNumber = ReadString("Please Enter Account Number: ");
     Client CurrentClient;
     char Answer;
 
@@ -768,6 +895,29 @@ void TransactionsOptions()
     }
 }
 
+void ShowAccessDeniedMessage()
+{
+    cout << "\n------------------------------------\n";
+    cout << "Access Denied, \nYou dont Have Permission To Do this,\nPlease Conact Your Admin.";
+    cout << "\n------------------------------------\n";
+}
+
+bool CheckPermission(enMainMenuePermissions Permission)
+{
+    if (LogedInUser.Permissions == enMainMenuePermissions::eAll)
+    {
+        return true;
+    }
+
+    if ((Permission & LogedInUser.Permissions) == Permission)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 void UsersOptions()
 {
     char Answer;
@@ -811,6 +961,14 @@ void UsersOptions()
 
 void ShowTransactionsMenu()
 {
+
+    if (!CheckPermission(enMainMenuePermissions::pTranactions))
+    {
+        ShowAccessDeniedMessage();
+        GoBackToMainMenue();
+        return;
+    }
+
     cout << "===========================================================================\n";
     cout << "                                 Transactions                                \n";
     cout << "===========================================================================\n\n";
@@ -826,6 +984,14 @@ void ShowTransactionsMenu()
 
 void ShowManageUsersMenu()
 {
+
+    if (!CheckPermission(enMainMenuePermissions::pManageUsers))
+    {
+        ShowAccessDeniedMessage();
+        GoBackToMainMenue();
+        return;
+    }
+
     cout << "===========================================================================\n";
     cout << "                                 Users Manager                                \n";
     cout << "===========================================================================\n\n";
@@ -843,7 +1009,7 @@ void ShowManageUsersMenu()
 
 void GoBackToMainMenue()
 {
-    cout << "\n\nPress any key to go back to Main Menue...";
+    cout << "\n\nPress any key to go back to Main Menue...\n\n";
     system("pause>0");
     ShowMainMenue();
 }
@@ -867,17 +1033,17 @@ void AppOptions()
         break;
     case '3':
         system("cls");
-        DeleteCustomer(ReadString("Please Enter Account Number: "));
+        DeleteCustomer();
         ShowMainMenue();
         break;
     case '4':
         system("cls");
-        UpdateCustomer(ReadString("Please Enter Account Number: "));
+        UpdateCustomer();
         ShowMainMenue();
         break;
     case '5':
         system("cls");
-        PrintCustomerSearchResult(ReadString("Please Enter Account Number: "));
+        PrintCustomerSearchResult();
         ShowMainMenue();
         break;
     case '6':
@@ -922,11 +1088,10 @@ void ShowMainMenue()
 
 void LogIn()
 {
-    User CurrentUser;
     string UserName = ReadString("Please Enter User Name: ");
     string Password = ReadString("Please Enter Password: ");
 
-    while (!FindUser(UserName, Password, CurrentUser))
+    while (!FindUser(UserName, Password, LogedInUser))
     {
         system("cls");
         cout << "Invalid Username/Password!" << endl;
