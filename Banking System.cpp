@@ -95,6 +95,8 @@ bool FindUser(string UserName, User &CurrentUser);
 void ShowAccessDeniedMessage();
 bool CheckPermission(enMainMenuePermissions Permission);
 void GoBackToMainMenue();
+void GoBackToUsersMenue();
+void GoBackToTransactionsMenue();
 
 int ReadPermissions()
 {
@@ -703,7 +705,7 @@ User CreateUpdatedUser(string UserName)
     getline(cin >> ws, UserData.Password);
 
     cout << "Enter Permissions? ";
-    cin >> UserData.Permissions;
+    UserData.Permissions = ReadPermissions();
 
     return UserData;
 }
@@ -874,17 +876,17 @@ void TransactionsOptions()
     case '1':
         system("cls");
         ShowDepositOrWithdrawalMenu("Deposit");
-        ShowTransactionsMenu();
+        GoBackToTransactionsMenue();
         break;
     case '2':
         system("cls");
         ShowDepositOrWithdrawalMenu("Withdrawal");
-        ShowTransactionsMenu();
+        GoBackToTransactionsMenue();
         break;
     case '3':
         system("cls");
         PrintAllCustomer(true);
-        ShowTransactionsMenu();
+        GoBackToTransactionsMenue();
         break;
     case '4':
         system("cls");
@@ -928,27 +930,27 @@ void UsersOptions()
     case '1':
         system("cls");
         PrintAllUsers();
-        ShowManageUsersMenu();
+        GoBackToUsersMenue();
         break;
     case '2':
         system("cls");
         CreateUsers();
-        ShowManageUsersMenu();
+        GoBackToUsersMenue();
         break;
     case '3':
         system("cls");
         DeleteUser(ReadString("Please Enter User Name: "));
-        ShowManageUsersMenu();
+        GoBackToUsersMenue();
         break;
     case '4':
         system("cls");
         UpdateUser(ReadString("Please Enter User Name: "));
-        ShowManageUsersMenu();
+        GoBackToUsersMenue();
         break;
     case '5':
         system("cls");
         PrintUserSearchResult(ReadString("Please Enter User Name: "));
-        ShowManageUsersMenu();
+        GoBackToUsersMenue();
         break;
     case '6':
         system("cls");
@@ -969,6 +971,8 @@ void ShowTransactionsMenu()
         return;
     }
 
+
+    system("cls");
     cout << "===========================================================================\n";
     cout << "                                 Transactions                                \n";
     cout << "===========================================================================\n\n";
@@ -992,6 +996,7 @@ void ShowManageUsersMenu()
         return;
     }
 
+    system("cls");
     cout << "===========================================================================\n";
     cout << "                                 Users Manager                                \n";
     cout << "===========================================================================\n\n";
@@ -1014,6 +1019,21 @@ void GoBackToMainMenue()
     ShowMainMenue();
 }
 
+
+void GoBackToTransactionsMenue()
+{
+    cout << "\n\nPress any key to go back to Transactions Menue...\n\n";
+    system("pause>0");
+    ShowTransactionsMenu();
+}
+
+void GoBackToUsersMenue()
+{
+    cout << "\n\nPress any key to go back to Users Menue...\n\n";
+    system("pause>0");
+    ShowManageUsersMenu();
+}
+
 void AppOptions()
 {
     char Answer;
@@ -1024,37 +1044,37 @@ void AppOptions()
     case '1':
         system("cls");
         PrintAllCustomer();
-        ShowMainMenue();
+        GoBackToMainMenue();
         break;
     case '2':
         system("cls");
         CreateCustomers();
-        ShowMainMenue();
+        GoBackToMainMenue();
         break;
     case '3':
         system("cls");
         DeleteCustomer();
-        ShowMainMenue();
+        GoBackToMainMenue();
         break;
     case '4':
         system("cls");
         UpdateCustomer();
-        ShowMainMenue();
+        GoBackToMainMenue();
         break;
     case '5':
         system("cls");
         PrintCustomerSearchResult();
-        ShowMainMenue();
+        GoBackToMainMenue();
         break;
     case '6':
         system("cls");
         ShowTransactionsMenu();
-        ShowMainMenue();
+        GoBackToMainMenue();
         break;
     case '7':
         system("cls");
         ShowManageUsersMenu();
-        ShowMainMenue();
+        GoBackToMainMenue();
         break;
     case '8':
         system("cls");
@@ -1062,13 +1082,16 @@ void AppOptions()
         break;
     default:
         cout << "Invalid Input!!!" << endl;
-        ShowMainMenue();
+        GoBackToMainMenue();
         break;
     }
 }
 
 void ShowMainMenue()
 {
+
+    system("cls");
+    
     cout << "===========================================================================\n";
     cout << "                                 Main Menu                                 \n";
     cout << "===========================================================================\n\n";
