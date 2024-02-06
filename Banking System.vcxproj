@@ -152,7 +152,6 @@
     <ClInclude Include="clsListUsersScreen.h" />
     <ClInclude Include="clsWithdrawScreen.h" />
     <ClInclude Include="Global.h" />
-    <ClInclude Include="LogInAttempts.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -77,6 +77,25 @@ public:
         return CurrentDate;
     }
 
+    static string GetSysDateTimeString()
+    {
+        // system datetime string
+        time_t t = time(0);
+        tm now;
+        localtime_s(&now, &t);
+
+        short Day, Month, Year, Hour, Minute, Second;
+
+        Year = now.tm_year + 1900;
+        Month = now.tm_mon + 1;
+        Day = now.tm_mday;
+        Hour = now.tm_hour;
+        Minute = now.tm_min;
+        Second = now.tm_sec;
+
+        return (to_string(Day) + "/" + to_string(Month) + "/" + to_string(Year) + " - " + to_string(Hour) + ":" + to_string(Minute) + ":" + to_string(Second));
+    }
+
     static string DateToString(clsDate NewDate)
     {
         return to_string(NewDate.Day) + "/" + to_string(NewDate.Month) + "/" + to_string(NewDate.Year);
@@ -94,7 +113,7 @@ public:
 
     static short DaysInMonth(short Year, short Month)
     {
-        int DaysOfMonths[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+        int DaysOfMonths[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         return (Month < 1 || Month > 12) ? 0 : (Month == 2 ? (IsLeapYear(Year) ? 29 : 28) : (DaysOfMonths[Month - 1]));
 
         // In One Line:
@@ -107,7 +126,7 @@ public:
         short Day = NewDate.Day;
         short Year = NewDate.Year;
 
-        int DaysOfMonths[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+        int DaysOfMonths[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         return (Month < 1 || Month > 12) ? 0 : (Month == 2 ? (IsLeapYear(Year) ? 29 : 28) : (DaysOfMonths[Month - 1]));
 
         // In One Line:
@@ -150,7 +169,7 @@ public:
 
     static string DayShortName(short DayOfWeekOrder)
     {
-        string arrDayNames[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+        string arrDayNames[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
         return arrDayNames[DayOfWeekOrder];
     }
 
@@ -159,7 +178,7 @@ public:
         string DateString = to_string(NewDate.Day) + "/" + to_string(NewDate.Month) + "/" + to_string(NewDate.Year);
 
         cout << "\n\n"
-            << DayShortName(OrderOfDate(NewDate)) << ", " << DateString << endl;
+             << DayShortName(OrderOfDate(NewDate)) << ", " << DateString << endl;
     }
 
     void Print()
@@ -169,7 +188,7 @@ public:
 
     static string MonthShortName(short Month)
     {
-        string arrDayNames[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+        string arrDayNames[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         return arrDayNames[Month - 1];
     }
 
@@ -177,7 +196,7 @@ public:
     {
 
         cout << "____________________________________________" << MonthShortName(Month) << "_____________________________________________\n"
-            << endl;
+             << endl;
         cout << setw(12) << left << "Sun";
         cout << setw(12) << left << "Mon";
         cout << setw(12) << left << "Tue";
@@ -253,7 +272,7 @@ public:
         return NewDate.Month == 12;
     }
 
-    static void AddOneDayToDate(clsDate& NewDate)
+    static void AddOneDayToDate(clsDate &NewDate)
     {
         if (IsDayLast(NewDate))
         {
@@ -397,14 +416,12 @@ public:
         return FormateDate(*this, DateFormat);
     }
 
-    static void  SwapDates(clsDate& Date1, clsDate& Date2)
+    static void SwapDates(clsDate &Date1, clsDate &Date2)
     {
 
         clsDate TempDate;
         TempDate = Date1;
         Date1 = Date2;
         Date2 = TempDate;
-
     }
-
 };
