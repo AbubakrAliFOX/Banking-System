@@ -77,7 +77,7 @@ public:
         return CurrentDate;
     }
 
-    static string GetSysDateTimeString()
+    static string GetSystemDateTimeString()
     {
         // system datetime string
         time_t t = time(0);
