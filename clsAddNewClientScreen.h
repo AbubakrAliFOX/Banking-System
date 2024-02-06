@@ -9,7 +9,7 @@
 class clsAddNewClientScreen : protected clsScreen
 {
 private:
-    static void _ReadClientInfo(clsBankClient& Client)
+    static void _ReadClientInfo(clsBankClient &Client)
     {
         cout << "\nEnter FirstName: ";
         Client.FirstName = clsInputValidate::ReadString();
@@ -43,11 +43,9 @@ private:
         cout << "\nPassword    : " << Client.PinCode;
         cout << "\nBalance     : " << Client.AccountBalance;
         cout << "\n___________________\n";
-
     }
 
 public:
-
     static void ShowAddNewClientScreen()
     {
 
@@ -65,7 +63,6 @@ public:
 
         clsBankClient NewClient = clsBankClient::GetAddNewClientObject(AccountNumber);
 
-
         _ReadClientInfo(NewClient);
 
         clsBankClient::enSaveResults SaveResult;
@@ -74,7 +71,7 @@ public:
 
         switch (SaveResult)
         {
-        case  clsBankClient::enSaveResults::svSucceeded:
+        case clsBankClient::enSaveResults::svSucceeded:
         {
             cout << "\nAccount Addeded Successfully :-)\n";
             _PrintClient(NewClient);
@@ -84,18 +81,12 @@ public:
         {
             cout << "\nError account was not saved because it's Empty";
             break;
-
         }
         case clsBankClient::enSaveResults::svFaildAccountNumberExists:
         {
             cout << "\nError account was not saved because account number is used!\n";
             break;
-
         }
         }
     }
-
-
-
 };
-
