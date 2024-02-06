@@ -205,6 +205,8 @@ public:
     }
     __declspec(property(get = GetAccountBalance, put = SetAccountBalance)) float AccountBalance;
 
+   /* 
+      No UI Related code iside object.
     void Print()
     {
         cout << "\nClient Card:";
@@ -219,7 +221,7 @@ public:
         cout << "\nBalance     : " << _AccountBalance;
         cout << "\n___________________\n";
 
-    }
+    }*/
 
     static clsBankClient Find(string AccountNumber)
     {
@@ -369,19 +371,19 @@ public:
         return _LoadClientsDataFromFile();
     }
 
-    static float GetTotalBalances()
+    static double GetTotalBalances()
     {
         vector <clsBankClient> vClients = clsBankClient::GetClientsList();
 
         double TotalBalances = 0;
 
-            for (clsBankClient Client : vClients)
-            {
+        for (clsBankClient Client : vClients)
+        {
 
-                TotalBalances += Client.AccountBalance;
-            }
+            TotalBalances += Client.AccountBalance;
+        }
 
-            return TotalBalances;
+        return TotalBalances;
 
     }
 
