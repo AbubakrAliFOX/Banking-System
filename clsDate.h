@@ -228,14 +228,14 @@ public:
         PrintYearCalender(this->Year);
     }
 
-    static bool IsValid(clsDate NewDate)
+    static bool IsValidDate(clsDate NewDate)
     {
         return (NewDate.Month <= 12 && NewDate.Month >= 1) && ((NewDate.Day <= DaysInMonth(NewDate) && NewDate.Day >= 1));
     }
 
-    bool IsValid()
+    bool IsValidDate()
     {
-        return IsValid(*this);
+        return IsValidDate(*this);
     }
 
     static bool IsDayLast(clsDate NewDate)
@@ -273,10 +273,10 @@ public:
     {
         clsDate CurrentDate = GetSysDate();
 
-        if (IsDateBeforeDate2(Birthday, CurrentDate))
+        if (IsDate1BeforeDate2(Birthday, CurrentDate))
         {
             int Counter = 0;
-            while (IsDateBeforeDate2(Birthday, CurrentDate))
+            while (IsDate1BeforeDate2(Birthday, CurrentDate))
             {
                 AddOneDayToDate(Birthday);
                 Counter++;
@@ -290,36 +290,36 @@ public:
         }
     }
 
-    static bool IsDateBeforeDate2(clsDate Date1, clsDate Date2)
+    static bool IsDate1BeforeDate2(clsDate Date1, clsDate Date2)
     {
         return (Date1.Year < Date2.Year) ? true : ((Date1.Year == Date2.Year) ? (Date1.Month < Date2.Month ? true : (Date1.Month == Date2.Month ? Date1.Day < Date2.Day : false)) : false);
     }
 
-    static bool IsDateEqualtoDate2(clsDate Date1, clsDate Date2)
+    static bool IsDate1EqualDate2(clsDate Date1, clsDate Date2)
     {
         return Date1.Year == Date2.Year ? (Date1.Month == Date2.Month ? Date1.Day == Date2.Day : false) : (false);
     }
 
-    static bool IsDateAfterDate2(clsDate Date1, clsDate Date2)
+    static bool IsDate1AfterDate2(clsDate Date1, clsDate Date2)
     {
-        return !IsDateBeforeDate2(Date1, Date2) && !IsDateEqualtoDate2(Date1, Date2);
+        return !IsDate1BeforeDate2(Date1, Date2) && !IsDate1EqualDate2(Date1, Date2);
     }
 
-    bool IsDateBeforeDate2(clsDate Date2)
+    bool IsDate1BeforeDate2(clsDate Date2)
     {
-        return IsDateBeforeDate2(*this, Date2);
+        return IsDate1BeforeDate2(*this, Date2);
     }
 
-    bool IsDateEqualtoDate2(clsDate Date2)
+    bool IsDate1EqualDate2(clsDate Date2)
     {
 
-        return IsDateEqualtoDate2(*this, Date2);
+        return IsDate1EqualDate2(*this, Date2);
     }
 
-    bool IsDateAfterDate2(clsDate Date2)
+    bool IsDate1AfterDate2(clsDate Date2)
     {
 
-        return IsDateAfterDate2(*this, Date2);
+        return IsDate1AfterDate2(*this, Date2);
     }
 
     static enum BeforeAfterEqualDate {
@@ -330,7 +330,7 @@ public:
 
     static BeforeAfterEqualDate CompareTwoDates(clsDate Date1, clsDate Date2)
     {
-        return IsDateBeforeDate2(Date1, Date2) ? (BeforeAfterEqualDate::Before) : (IsDateEqualtoDate2(Date1, Date2) ? BeforeAfterEqualDate::Equal : BeforeAfterEqualDate::After);
+        return IsDate1BeforeDate2(Date1, Date2) ? (BeforeAfterEqualDate::Before) : (IsDate1EqualDate2(Date1, Date2) ? BeforeAfterEqualDate::Equal : BeforeAfterEqualDate::After);
     }
 
     BeforeAfterEqualDate CompareTwoDates(clsDate Date2)
@@ -341,10 +341,10 @@ public:
     static int CalculateDateDifference(clsDate NewDate1, clsDate NewDate2, bool IncludeEndDay = false)
     {
 
-        if (IsDateBeforeDate2(NewDate1, NewDate2))
+        if (IsDate1BeforeDate2(NewDate1, NewDate2))
         {
             int Counter = 0;
-            while (IsDateBeforeDate2(NewDate1, NewDate2))
+            while (IsDate1BeforeDate2(NewDate1, NewDate2))
             {
                 AddOneDayToDate(NewDate1);
                 Counter++;
