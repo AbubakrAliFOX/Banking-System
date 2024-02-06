@@ -77,9 +77,14 @@ public:
         return CurrentDate;
     }
 
-    string DateToString(clsDate NewDate)
+    static string DateToString(clsDate NewDate)
     {
         return to_string(NewDate.Day) + "/" + to_string(NewDate.Month) + "/" + to_string(NewDate.Year);
+    }
+
+    string DateToString()
+    {
+        return DateToString(*this);
     }
 
     static bool IsLeapYear(short Number)
