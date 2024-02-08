@@ -9,6 +9,7 @@
 #include "clsDate.h"
 #include "clsUtil.h"
 
+
 using namespace std;
 class clsUser : public clsPerson
 {
