@@ -3,6 +3,7 @@
 #include <string>
 #include "clsPerson.h"
 #include "clsString.h"
+#include "clsBankClient.h"
 #include <vector>
 #include <fstream>
 #include "clsDate.h"
@@ -47,6 +48,7 @@ private:
         LoginRecord += to_string(Permissions);
         return LoginRecord;
     }
+
 
     static clsUser _ConvertLinetoUserObject(string Line, string Seperator = "#//#")
     {
@@ -405,6 +407,7 @@ public:
         }
     }
 
+    
     static vector<stLoginRegisterRecord> GetLoginRegisterList()
     {
         vector<stLoginRegisterRecord> vLoginRegisterRecord;
