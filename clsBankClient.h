@@ -374,6 +374,17 @@ public:
        
     }
 
+    bool Transfer (double Amount, clsBankClient & DestinationAccount) {
+        if (Amount > AccountBalance)
+        {
+            return false;
+        }
+
+        Withdraw(Amount);
+        DestinationAccount.Deposit(Amount);
+        return true;        
+    }
+
     static double GetTotalBalances()
     {
         vector <clsBankClient> vClients = clsBankClient::GetClientsList();

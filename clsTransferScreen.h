@@ -46,32 +46,6 @@ private:
         return Client;
     }
 
-    static void _Transfer(clsBankClient Client1, clsBankClient Client2, double Amount)
-    {
-        while (Client1.AccountBalance < Amount)
-        {
-            cout << "\nAmount exceeds the avaliable balance, please enter another amount:";
-            Amount = clsInputValidate::ReadDblNumber();
-        }
-
-        cout << "\nAre you sure you want to perform this transaction? (y / n)";
-        char Answer = 'n';
-        cin >> Answer;
-
-        if (Answer == 'Y' || Answer == 'y')
-        {
-            Client1.Withdraw(Amount);
-            Client2.Deposit(Amount);
-            cout << "\nAmount Transfered Successfully.\n";
-            _PrintClient(Client1);
-            _PrintClient(Client2);
-        }
-        else
-        {
-            cout << "\nOperation was cancelled.\n";
-        }
-    }
-
 public:
     static void ShowTransfer()
     {
@@ -87,6 +61,32 @@ public:
         cout << "\nPlease enter transfer amount? ";
         Amount = clsInputValidate::ReadDblNumber();
 
-        _Transfer(Client1, Client2, Amount);
+        while (Client1.AccountBalance < Amount)
+        {
+            cout << "\nAmount exceeds the avaliable balance, please enter another amount:";
+            Amount = clsInputValidate::ReadDblNumber();
+        }
+
+        cout << "\nAre you sure you want to perform this transaction? (y / n)";
+        char Answer = 'n';
+        cin >> Answer;
+
+        if (Answer == 'Y' || Answer == 'y')
+        {
+            if (Client1.Transfer(Amount, Client2))
+            {
+                cout << "\nSuccessfully transfered\n";
+                _PrintClient(Client1);
+                _PrintClient(Client2);
+            }
+            else
+            {
+                cout << "\nTransfer failed\n!!";
+            }
+        }
+        else
+        {
+            cout << "\nOperation was cancelled.\n";
+        }
     }
 };
