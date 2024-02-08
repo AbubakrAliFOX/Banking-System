@@ -142,7 +142,7 @@ private:
         return clsBankClient(enMode::EmptyMode, "", "", "", "", "", "", 0);
     }
 
-    string _PrepareTransactionRecord(clsBankClient DestinationClient, double Amount,string UserName ,string Seperator = "#//#")
+    string _PrepareTransactionRecord(clsBankClient DestinationClient, double Amount, string UserName, string Seperator = "#//#")
     {
         string TransferRecord = "";
         TransferRecord += clsDate::GetSystemDateTimeString() + Seperator;
@@ -172,7 +172,38 @@ private:
         }
     }
 
+    struct stTransferLogRecord;
+    static stTransferLogRecord _ConvertTransferRegisterLineToRecord(string Line, string Seperator = "#//#")
+    {
+        stTransferLogRecord TransferRegisterRecord;
+
+        vector<string> TransferRegisterDataLine = clsString::Split(Line, Seperator);
+        TransferRegisterRecord.DateTime = TransferRegisterDataLine[0];
+        TransferRegisterRecord.SourceClientAcct = TransferRegisterDataLine[1];
+        TransferRegisterRecord.DestionationClientAcct = TransferRegisterDataLine[2];
+        TransferRegisterRecord.Amount = stod(TransferRegisterDataLine[3]);
+        TransferRegisterRecord.SourceClientBalance = stod(TransferRegisterDataLine[4]);
+        TransferRegisterRecord.DestionationClientBalance = stod(TransferRegisterDataLine[5]);
+        TransferRegisterRecord.UserName = TransferRegisterDataLine[6];
+
+        return TransferRegisterRecord;
+    }
+
 public:
+    struct stTransferLogRecord
+    {
+        string DateTime;
+
+        string SourceClientAcct;
+        double SourceClientBalance;
+
+        string DestionationClientAcct;
+        double DestionationClientBalance;
+
+        double Amount;
+        string UserName;
+    };
+
     clsBankClient(enMode Mode, string FirstName, string LastName,
                   string Email, string Phone, string AccountNumber, string PinCode,
                   float AccountBalance) : clsPerson(FirstName, LastName, Email, Phone)
@@ -405,5 +436,33 @@ public:
         }
 
         return TotalBalances;
+    }
+
+    static vector<stTransferLogRecord> GetTranferRegisterList()
+    {
+        vector<stTransferLogRecord> vTransferLog;
+
+        fstream MyFile;
+        MyFile.open("TransferRegister.txt", ios::in); // read Mode
+
+        if (MyFile.is_open())
+        {
+
+            string Line;
+
+            stTransferLogRecord TransferRegisterRecord;
+
+            while (getline(MyFile, Line))
+            {
+
+                TransferRegisterRecord = _ConvertTransferRegisterLineToRecord(Line);
+
+                vTransferLog.push_back(TransferRegisterRecord);
+            }
+
+            MyFile.close();
+        }
+
+        return vTransferLog;
     }
 };
