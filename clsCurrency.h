@@ -233,7 +233,12 @@ public:
     {
         clsCurrency C1 = clsCurrency::FindByCode(CurrencyCode);
         return (!C1.IsEmpty());
+    }
 
+    static bool IsCurrencyExistByCountry(string Country)
+    {
+        clsCurrency C1 = clsCurrency::FindByCountry(Country);
+        return (!C1.IsEmpty());
     }
 
     static vector <clsCurrency> GetCurrenciesList()

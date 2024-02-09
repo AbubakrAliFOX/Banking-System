@@ -4,7 +4,7 @@
 #include "clsInputValidate.h"
 #include <iomanip>
 #include "clsListCurrenciesScreen.h"
-// #include "clsFindCurrencyScreen.h"
+#include "clsFindCurrencyScreen.h"
 // #include "clsUpdateRateScreen.h"
 // #include "clsCalculatorScreen.h"
 
@@ -47,7 +47,7 @@ private:
     static void _ShowFindCurrencyScreen()
     {
         // cout << "\nAdd New User Screen Will Be Here.\n";
-        // clsFindCurrencyScreen::ShowFindCurrencyScreen();
+        clsFindCurrencyScreen::ShowFindCurrencyScreen();
     }
 
     static void _ShowUpdateRateScreen()
