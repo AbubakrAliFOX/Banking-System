@@ -4,9 +4,9 @@
 #include "clsInputValidate.h"
 #include <iomanip>
 #include "clsListCurrenciesScreen.h"
-#include "clsFindCurrencyScreen.h"
-#include "clsUpdateRateScreen.h"
-#include "clsCalculatorScreen.h"
+// #include "clsFindCurrencyScreen.h"
+// #include "clsUpdateRateScreen.h"
+// #include "clsCalculatorScreen.h"
 
 using namespace std;
 
@@ -41,25 +41,25 @@ private:
     static void _ShowListCurrenciesScreen()
     {
         // cout << "\nList Users Screen Will Be Here.\n";
-        clsListCurrenciesScreen::ShowUsersList();
+        clsListCurrenciesScreen::DisplayCurrencyList();
     }
 
     static void _ShowFindCurrencyScreen()
     {
         // cout << "\nAdd New User Screen Will Be Here.\n";
-        clsFindCurrencyScreen::ShowFindCurrencyScreen();
+        // clsFindCurrencyScreen::ShowFindCurrencyScreen();
     }
 
     static void _ShowUpdateRateScreen()
     {
         // cout << "\nDelete User Screen Will Be Here.\n";
-        clsUpdateRateScreen::ShowUpdateRateScreen();
+        // clsUpdateRateScreen::ShowUpdateRateScreen();
     }
 
     static void _ShowCalculatorScreen()
     {
         // cout << "\nUpdate User Screen Will Be Here.\n";
-        clsCalculatorScreen::ShowCalculatorScreen();
+        // clsCalculatorScreen::ShowCalculatorScreen();
     }
 
     static void _PerformCurrencyMenueOption(enCurrencyMenuOptions ManageUsersMenueOption)

@@ -171,7 +171,7 @@ public:
     }
 
 
-    static   clsCurrency FindByCode(string CurrencyCode)
+    static clsCurrency FindByCode(string CurrencyCode)
     {
 
         CurrencyCode = clsString::UpperAllString(CurrencyCode);
@@ -200,7 +200,7 @@ public:
 
     }
 
-    static   clsCurrency FindByCountry(string Country)
+    static clsCurrency FindByCountry(string Country)
     {
         Country = clsString::UpperAllString(Country);
 
