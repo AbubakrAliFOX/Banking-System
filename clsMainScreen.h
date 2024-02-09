@@ -12,6 +12,7 @@
 #include "clsLoginScreen.h"
 #include "clsLoginRegisterScreen.h"
 #include "Global.h"
+#include "clsCurrencyExchangeScreen.h"
 
 using namespace std;
 
@@ -29,7 +30,8 @@ private:
         eShowTransactionsMenue = 6,
         eManageUsers = 7,
         eLogInRegister = 8,
-        eExit = 9
+        eCurrencyExchange = 9,
+        eExit = 10
     };
 
     static short _ReadMainMenueOption()
@@ -94,6 +96,11 @@ private:
     static void _ShowLogInRegister()
     {
         clsLoginRegisterScreen::ShowLoginRegisterScreen();
+    }
+
+    static void _ShowCurrencyMenu()
+    {
+        clsCurrencyExchangeScreen::ShowCurrencyExchangeScreen();
     }
 
     /*  static void _ShowEndScreen()
@@ -162,6 +169,12 @@ private:
             _GoBackToMainMenue();
             break;
 
+        case enMainMenueOptions::eCurrencyExchange:
+            system("cls");
+            _ShowCurrencyMenu();
+            _GoBackToMainMenue();
+            break;
+
         case enMainMenueOptions::eExit:
             system("cls");
             _Logout();
@@ -200,7 +213,9 @@ public:
         cout << setw(37) << left << ""
              << "\t[8] Log In Register.\n";
         cout << setw(37) << left << ""
-             << "\t[9] Logout.\n";
+             << "\t[9] Currency Exchange.\n";
+        cout << setw(37) << left << ""
+             << "\t[10] Logout.\n";
         cout << setw(37) << left << ""
              << "===========================================\n";
 
