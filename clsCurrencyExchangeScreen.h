@@ -5,7 +5,7 @@
 #include <iomanip>
 #include "clsListCurrenciesScreen.h"
 #include "clsFindCurrencyScreen.h"
-// #include "clsUpdateRateScreen.h"
+#include "clsUpdateRateScreen.h"
 // #include "clsCalculatorScreen.h"
 
 using namespace std;
@@ -53,7 +53,7 @@ private:
     static void _ShowUpdateRateScreen()
     {
         // cout << "\nDelete User Screen Will Be Here.\n";
-        // clsUpdateRateScreen::ShowUpdateRateScreen();
+        clsUpdateRateScreen::ShowUpdateRateScreen();
     }
 
     static void _ShowCalculatorScreen()
