@@ -296,5 +296,13 @@ public:
         return RemovePunctuation(Value);
     }
 
+    static string UpperAllString(string str) {
+        string result = str;
+        for (char& c : result) {
+            c = toupper(c);
+        }
+        return result;
+    }
+
 };
 
