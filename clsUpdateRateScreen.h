@@ -80,9 +80,9 @@ public:
         {
             cout << "\nUpdate Currency Rate:\n";
             cout << "\nEnter new rate:";
-            float NewRate = clsInputValidate::ReadFloatNumber();
-            Currency.UpdateRate(NewRate);
+            Currency.UpdateRate(clsInputValidate::ReadFloatNumber());
             cout << "\nUpdated Successfully\n";
+            _PrintCurrency(Currency);
         }
         else
         {

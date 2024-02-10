@@ -6,7 +6,7 @@
 #include "clsListCurrenciesScreen.h"
 #include "clsFindCurrencyScreen.h"
 #include "clsUpdateRateScreen.h"
-// #include "clsCalculatorScreen.h"
+#include "clsCalculatorScreen.h"
 
 using namespace std;
 
@@ -59,7 +59,7 @@ private:
     static void _ShowCalculatorScreen()
     {
         // cout << "\nUpdate User Screen Will Be Here.\n";
-        // clsCalculatorScreen::ShowCalculatorScreen();
+        clsCalculatorScreen::ShowCalculatorScreen();
     }
 
     static void _PerformCurrencyMenueOption(enCurrencyMenuOptions ManageUsersMenueOption)
