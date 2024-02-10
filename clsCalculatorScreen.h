@@ -34,12 +34,17 @@ private:
     }
 
     static void _ConverCurrency(clsCurrency Currency1, clsCurrency Currency2, float Amount)
-    {   
+    {
         double AmountUSD = Currency1.ConverToUSD(Amount);
         cout << "\nConvert From:\n";
         _PrintCurrency(Currency1);
         cout << Amount << " " << Currency1.CurrencyCode() << " = " << AmountUSD << " "
              << "USD" << endl;
+
+        if (Currency2.CurrencyCode() == "USD")
+        {
+            return;
+        }
 
         float USDtoCurrency = Currency1.ConverTo(Currency2, Amount);
         cout << "\nConvert From USD to:\n";
